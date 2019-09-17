@@ -1,5 +1,17 @@
 # UI
 
+## gen App
+
+```sh
+bash gen.sh AppName
+```
+
+Example
+
+```sh
+bash gen.sh HelloWorld
+```
+
 - Create app in `src/UI`
 - Screenshot in `assets/UI`
 
