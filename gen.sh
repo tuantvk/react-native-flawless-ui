@@ -14,5 +14,7 @@ echo "# ${1^}" >> src/"${1^}"/README.md;
 mkdir -p src/"${1^}"/views;
 mkdir -p src/"${1^}"/components;
 
+mkdir -p assets/"${1^}";
+
 
 echo ">>> Create template done !!!!!"
