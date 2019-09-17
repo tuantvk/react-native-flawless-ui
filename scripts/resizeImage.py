@@ -2,7 +2,7 @@ import os
 import re
 from PIL import Image
 
-BASEWIDTH = 600 # default base with image
+BASEWIDTH = 400 # default base with image
 PATH_FILE = '/' # path file
 
 def resizeImage(href, basewidth = BASEWIDTH): 
