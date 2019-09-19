@@ -1,1 +1,4 @@
-# react-native-flawless-ui
+# react native flawless ui
+
+
+MIT License
