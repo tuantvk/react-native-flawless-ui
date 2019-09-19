@@ -5,11 +5,14 @@
   "scripts": {
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build"
   },
   "dependencies": {
     "native-base": "^2.13.8",
-    "react": "16.8.6",
+    "react": "16.9.0",
+    "react-dom": "^16.9.0",
     "react-native": "0.60.5",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
@@ -22,9 +25,12 @@
     "@babel/runtime": "^7.6.0",
     "@react-native-community/eslint-config": "^0.0.5",
     "babel-jest": "^24.9.0",
+    "docz": "latest",
+    "docz-theme-default": "^1.2.0",
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.56.0",
+    "prop-types": "^15.7.2",
     "react-test-renderer": "16.8.6"
   },
   "jest": {
