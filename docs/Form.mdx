@@ -192,3 +192,28 @@ You need to enable Android Support with the following steps:
 - Make sure you are using react-native 0.46 or above.
 - Set `windowSoftInputMode` to `adjustPan` in `AndroidManifest.xml`.
 - Set `enableOnAndroid` property to `true`.
+
+
+### Use 
+
+```js
+import { ScrollableAvoidKeyboard } from './ScrollableAvoidKeyboard';
+
+
+const FormScrollView = () => (
+  <ScrollableAvoidKeyboard>
+    <View>
+      <TextInput placeholder="Placeholder 1" />
+      <TextInput placeholder="Placeholder 2" />
+      <TextInput placeholder="Placeholder 3" />
+      <TextInput placeholder="Placeholder 4" />
+      <TextInput placeholder="Placeholder 5" />
+      <TextInput placeholder="Placeholder 6" />
+      <TextInput placeholder="Placeholder 7" />
+      <TextInput placeholder="Placeholder 8" />
+      <TextInput placeholder="Placeholder 9" />
+      <TextInput placeholder="Placeholder 10" />
+    </View>
+  </ScrollableAvoidKeyboard>
+);
+```
