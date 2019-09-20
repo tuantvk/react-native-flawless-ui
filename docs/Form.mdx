@@ -1,0 +1,194 @@
+---
+name: Form
+route: /form
+---
+
+# Form
+
+- [redux-form](https://redux-form.com/7.4.2/)
+- [react-native-elements](https://github.com/react-native-training/react-native-elements)
+- [tcomb-form-native](https://github.com/gcanti/tcomb-form-native)
+- [formik](https://github.com/jaredpalmer/formik)
+
+
+Having considered the options, I have decided to use `formik`; 
+was an especially easy decision as it is my long-time go-to forms solution in React web development.
+
+
+## Formik
+
+`Formik` is 100% compatible with `React Native` and `React Native Web`. 
+However, because of differences between ReactDOM's and React Native's handling of forms and text input, 
+there are some differences to be aware of. 
+This section will walk you through them and what we consider to be best practices.
+
+
+Example:
+
+```js
+import React from 'react';
+import { Button, TextInput, View } from 'react-native';
+import { Formik } from 'formik';
+
+export const MyReactNativeForm = props => (
+  <Formik
+    initialValues={{ email: '' }}
+    onSubmit={values => console.log(values)}
+  >
+    {props => (
+      <View>
+        <TextInput
+          onChangeText={props.handleChange('email')}
+          onBlur={props.handleBlur('email')}
+          value={props.values.email}
+        />
+        <Button onPress={props.handleSubmit} title="Submit" />
+      </View>
+    )}
+  </Formik>
+);
+```
+
+
+## Redux Form
+
+This simple App should get you familiar with these Libraries and their use case.
+
+```js
+import React, { Component } from 'react';
+import { View, Text, Button, TextInput } from 'react-native';
+import { Field, reduxForm } from 'redux-form';
+
+class ReduxFormExample extends Component {
+
+  renderInput = ({ input, label, type, meta: { touched, error, warning } }) => {
+    return (
+      <View>
+        <TextInput {...input} />
+        {error ? <Text>{error}</Text> : null}
+      </View>
+    )
+  }
+
+  render() {
+    const { handleSubmit } = this.props;
+    return (
+      <View>
+        <Field placeholder="email" component={this.renderInput} />
+        <Field placeholder="name" component={this.renderInput} />
+        <Button onPress={reset}>
+          <Text>Submit</Text>
+        </Button>
+      </View>
+    );
+  }
+}
+
+export default reduxForm({
+  form: 'user',
+})(ReduxFormExample)
+```
+
+View full example with Native Base [Redux Form Example](https://docs.nativebase.io/docs/examples/ReduxFormExample.html)
+
+
+## Formik Validation
+
+- `yup`
+
+Yup is a JavaScript object schema validator and object parser. View on [Github](https://github.com/jquense/yup)
+
+Add Yup to your project
+
+```sh
+yarn add yup
+# or
+# npm install yup --save
+# typescript users should add the @types/yup
+```
+
+```js
+// SignupSchema.js
+import * as Yup from 'yup';
+
+const SignupSchema = Yup.object().shape({
+  email: Yup.string()
+    .min(6, 'Too Short!')
+    .max(30, 'Too Long!')
+    .email('Invalid email')
+    .required('Required'),
+  password: Yup.string()
+    .min(8, 'Too Short!')
+    .max(20, 'Too Long!')
+    .required('Required'),
+});
+```
+
+```js
+import SignupSchema from './SignupSchema';
+
+<Formik
+  initialValues={{ email: '', password: '' }}
+  validationSchema={SignupSchema} // here
+  onSubmit={values => console.log(values)}
+>
+  {props => (
+    <View>
+      <TextInput
+        onChangeText={props.handleChange('email')}
+        onBlur={props.handleBlur('email')}
+        value={props.values.email}
+      />
+      <TextInput
+        onChangeText={props.handleChange('password')}
+        onBlur={props.handleBlur('password')}
+        value={props.values.password}
+      />
+      <Button onPress={props.handleSubmit} title="Submit" />
+    </View>
+  )}
+</Formik>
+```
+
+## Form ScrollView
+
+ScrollView component that handles keyboard appearance and automatically scrolls to focused TextInput.
+
+- `react-native-keyboard-aware-scroll-view`. View on [Github](https://github.com/APSL/react-native-keyboard-aware-scroll-view)
+
+Example: 
+
+View config my repo [ScrollableAvoidKeyboard](https://github.com/tuantvk/react-native-flawless-ui/blob/master/src/common/ScrollableAvoidKeyboard.js)
+
+```js
+// ScrollableAvoidKeyboard.js
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+const ScrollableAvoidKeyboard = ({
+  children,
+  contentContainerStyle,
+  ...restProps,
+}) => (
+    <KeyboardAwareScrollView
+      bounces={false}
+      bouncesZoom={false}
+      alwaysBounceVertical={false}
+      alwaysBounceHorizontal={false}
+      removeClippedSubviews={false}
+      contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
+      enableOnAndroid={true}
+      {...restProps}
+    >
+      {children}
+    </KeyboardAwareScrollView>
+  );
+```
+
+### Android Support
+
+You can easily enable it by setting `windowSoftInputMode` in `AndroidManifest.xml`.
+You need to enable Android Support with the following steps:
+
+- Make sure you are using react-native 0.46 or above.
+- Set `windowSoftInputMode` to `adjustPan` in `AndroidManifest.xml`.
+- Set `enableOnAndroid` property to `true`.
