@@ -278,5 +278,74 @@ function fromRight(duration = 400) {
 }
 ```
 
-
 View code [Navigating Between Screens App.js](https://github.com/tuantvk/react-native-flawless-ui/blob/master/App.js)
+
+
+## Tab navigation
+
+This guide covers [createBottomTabNavigator](https://reactnavigation.org/docs/en/bottom-tab-navigator.html). 
+You may also use [createMaterialBottomTabNavigator](https://reactnavigation.org/docs/en/material-bottom-tab-navigator.html) 
+and [createMaterialTopTabNavigator](https://reactnavigation.org/docs/en/material-top-tab-navigator.html) to add tabs to your application.
+
+
+- `createBottomTabNavigator`
+
+```js
+import React from 'react';
+import { Text, View } from 'react-native';
+import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+
+class HomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Home!</Text>
+      </View>
+    );
+  }
+}
+
+class SettingsScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Settings!</Text>
+      </View>
+    );
+  }
+}
+
+const TabNavigator = createBottomTabNavigator({
+  Home: HomeScreen,
+  Settings: SettingsScreen,
+});
+
+export default createAppContainer(TabNavigator);
+```
+
+- `createMaterialBottomTabNavigator`
+
+```js
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+
+export default createMaterialBottomTabNavigator(
+  {
+    Album: { screen: Album },
+    Library: { screen: Library },
+    History: { screen: History },
+    Cart: { screen: Cart },
+  },
+  {
+    initialRouteName: 'Album',
+  }
+);
+```
+
+- `createMaterialTopTabNavigator`
+
+```js
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
+
+createMaterialTopTabNavigator(RouteConfigs, TabNavigatorConfig);
+```
