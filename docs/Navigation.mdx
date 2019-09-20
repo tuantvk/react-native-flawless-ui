@@ -3,6 +3,280 @@ name: Navigation
 route: /navigation
 ---
 
-# Navigation
+# Navigating Between Screens
 
-Hello, I'm a mdx file!
+This guide covers the various navigation components available in React Native. 
+If you are just getting started with navigation, you will probably want to use 
+[React Navigation](https://reactnavigation.org/). 
+React Navigation provides an easy to use navigation solution, 
+with the ability to present common stack navigation and tabbed navigation patterns on both iOS and Android.
+
+If you'd like to achieve a native look and feel on both iOS and Android, 
+or you're integrating React Native into an app that already manages navigation natively, 
+the following library provides native navigation on both platforms: 
+[react-native-navigation](https://github.com/wix/react-native-navigation).
+
+
+## React Navigation
+
+
+Install the `react-navigation` package in your React Native project.
+
+```sh
+yarn add react-navigation
+# or with npm
+# npm install react-navigation
+```
+
+Install `react-native-gesture-handler` and `react-navigation-stack`
+
+```sh
+yarn add react-native-gesture-handler
+# or with npm
+# npm install --save react-native-gesture-handler
+```
+
+```sh
+yarn add react-navigation-stack
+# or with npm
+# npm install --save react-navigation-stack
+```
+
+### Creating a stack navigator
+
+```js
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+
+const MainNavigator = createStackNavigator({
+  Home: { screen: HomeScreen },
+  Profile: { screen: ProfileScreen },
+});
+
+const App = createAppContainer(MainNavigator);
+
+export default App;
+```
+
+Moving between screens
+
+```js
+class HomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+          title="Go to Profile"
+          onPress={() => this.props.navigation.navigate('Profile')}
+        />
+      </View>
+    );
+  }
+}
+```
+
+### Configuring
+
+- Setting the header title
+
+```js
+class ProfileScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Profile',
+  };
+
+  /* render function, etc */
+}
+```
+
+- Using params in the title
+
+```js
+class ProfileScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('otherParam', 'A Nested Profile Screen'),
+    };
+  };
+
+  /* render function, etc */
+}
+```
+
+- Passing params to screen
+
+`getParam` - get a specific param with fallback.
+
+```js
+// Home.js
+
+<Button
+  title="Profile"
+  onPress={() => this.props.navigation.navigate('Profile', { name: 'Mike' })}
+/>
+
+// Profile.js
+
+componentDidMount = () => {
+  let name = this.props.navigation.getParam('name', '');
+  console.log(name); // Mike
+}
+```
+
+- Move back in the stack
+
+`goBack` - close active screen and move back in the stack.
+
+```js
+class ProfileScreen extends React.Component {
+  render() {
+    const { goBack } = this.props.navigation;
+    return (
+      <View>
+        <Button
+          onPress={() => goBack()}
+          title="Back"
+        />
+        {/* Go back from key-123 */}
+        <Button
+          onPress={() => goBack('key-123')}
+          title="Go back from key"
+        />
+      </View>
+    );
+  }
+}
+```
+
+- Custom Android back button behavior
+
+The following code snippet demostrates the situation. 
+We make use of `BackHandler` which comes with react-native and 
+we subscribe to navigation lifecycle updates to add our custom hardwareBackPress listener.
+
+```js
+import { BackHandler } from 'react-native';
+// ...
+constructor(props) {
+  super(props);
+  this._didFocusSubscription = props.navigation.addListener(
+    'didFocus',
+    payload =>
+      BackHandler.addEventListener(
+        'hardwareBackPress',
+        this.onBackButtonPressAndroid
+      )
+  );
+}
+
+componentDidMount() {
+  this._willBlurSubscription = this.props.navigation.addListener(
+    'willBlur',
+    payload =>
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        this.onBackButtonPressAndroid
+      )
+  );
+}
+
+onBackButtonPressAndroid = () => {
+  // Do something
+}
+```
+
+```js
+componentWillUnmount () => {
+  // clear event listener
+  this._didFocusSubscription && this._didFocusSubscription.remove();
+  this._willBlurSubscription && this._willBlurSubscription.remove();
+}
+```
+
+
+- Updating `navigationOptions` with `setParams`
+
+```js
+/* Inside of render() */
+<Button
+  title="Update the title"
+  onPress={() => this.props.navigation.setParams({ otherParam: 'Updated!' })}
+/>
+```
+
+- Additional configuration
+
+You can read the full list of available `navigationOptions` for screens 
+inside of a stack navigator in the `createStackNavigator` reference.
+
+```js
+const AppNavigator = createStackNavigator({
+  Home: {
+    screen: Home,
+  },
+  Profile: {
+    screen: Profile,
+  },
+}, {
+  initialRouteName: 'Home',
+  headerMode: 'none',
+  navigationOptions: {
+    gesturesEnabled: false,
+    headerVisible: false,
+  },
+});
+```
+
+StackNavigatorConfig
+
++ `initialRouteName` - Sets the default screen of the stack. Must match one of the keys in route configs.
++ `headerMode` -  No header will be rendered.
++ `gesturesEnabled` - Whether you can use gestures to dismiss this screen. Defaults to true on iOS, false on Android.
++ `transitionConfig` - Function to return an object that is merged with the default screen transitions.
+
+Example `transitionConfig`: View on Github [react-navigation-transitions](https://github.com/plmok61/react-navigation-transitions)
+
+```js
+function fromRight(duration = 400) {
+  return {
+    transitionSpec: {
+      duration,
+      easing: Easing.out(Easing.poly(4)),
+      timing: Animated.timing,
+      useNativeDriver: true,
+    },
+    screenInterpolator: ({ layout, position, scene }) => {
+      const { index } = scene;
+      const { initWidth } = layout;
+
+      const translateX = position.interpolate({
+        inputRange: [index - 1, index],
+        outputRange: [initWidth, 0]
+      });
+
+      const opacity = position.interpolate({
+        inputRange: [index - 1, index - 0.99, index],
+        outputRange: [0, 1, 1],
+      });
+
+      return { opacity, transform: [{ translateX }] };
+    },
+  };
+}
+```
+
+```js
+{
+  initialRouteName: 'Home',
+  headerMode: 'none',
+  navigationOptions: {
+    gesturesEnabled: false,
+    headerVisible: false,
+  },
+  transitionConfig: () => fromRight(), // here
+}
+```
+
+
+View code [Navigating Between Screens App.js](https://github.com/tuantvk/react-native-flawless-ui/blob/master/App.js)
