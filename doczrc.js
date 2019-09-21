@@ -6,6 +6,7 @@ export default {
   menu: [
     "Introduction",
     "Navigation",
+    "State Management",
     "Form",
   ]
 }

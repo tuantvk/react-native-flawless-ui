@@ -1,0 +1,99 @@
+---
+name: State Management
+route: /state-management
+---
+
+# State Management
+
+### Why do we need state at all
+
+ State is the interface between your data from any kind of backend or local change 
+ and the representation of this data with UI-elements in the frontend. 
+ State is able to keep the data of different components in sync because each state update will rerender all relevant components. 
+
+
+ ## Component state
+
+ The state of a component is like the props which are passed to a component, 
+ a plain JavaScript object containing information that influences the way a component is rendered. 
+ In comparison, to the props, the state can be changed by the component itself 
+ by calling `setState` which will trigger a re-render of the component. 
+ The state API of React is really simple at all and doesn’t add too much complexity 
+ to your application.
+
+ ```js
+ class Clock extends React.Component {
+  state = {
+    date: new Date(),
+  };
+
+  _refeshDate = () => this.setState({ date: new Date() });
+
+  render() {
+    return (
+      <View>
+        <Text>It is {this.state.date.toLocaleTimeString()}.</Text>
+        <Button
+          title="Refesh"
+          onPress={this._refeshDate}
+        />
+      </View>
+    );
+  }
+}
+ ```
+
+Your component dependencies and the size and complexity of your app grows you will 
+find yourself by pushing the state up in your component-tree to inject the relevant 
+state in several components. 
+The distance between your states location and your components 
+which need a certain part of the state will increase.
+
+This leads to prop drilling, meaning passing props through components 
+which don’t need the props but their children do. 
+You want to avoid this because it increases the complexity, for example during a refactoring.
+
+
+ ## Context API
+
+The `Context API` was added to React in version `16.3.0 earlier` this year. 
+Context provides a way to pass data through the component tree without having to 
+pass props down manually at every level.
+
+### When to Use Context ?
+
+Context is designed to share data that can be considered `global` for a tree of React components, 
+such as the current authenticated user, theme, or preferred language.
+
+```js
+const ThemeContext = React.createContext('light');
+
+class App extends React.Component {
+  render() {
+    return (
+      <ThemeContext.Provider value="dark">
+        <Toolbar />
+      </ThemeContext.Provider>
+    );
+  }
+}
+
+const Toolbar = () => (
+  <View>
+    <ThemedButton />
+  </View>
+)
+
+class ThemedButton extends React.Component {
+  static contextType = ThemeContext;
+
+  render() {
+    return <Button theme={this.context} />;
+  }
+}
+```
+
+ ## Redux
+
+
+ ## Mobx

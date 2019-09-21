@@ -1,6 +1,6 @@
 ---
 name: Title
-route: /title
+route: /slug-title
 ---
 
 # Title
