@@ -97,3 +97,140 @@ class ThemedButton extends React.Component {
 
 
  ## Mobx
+
+ Install the dependencies we will need: [mobx](https://mobx.js.org/) and [mobx-react](https://github.com/mobxjs/mobx-react)
+
+ ```sh
+ yarn add mobx mobx-react
+ # or
+ # npm i mobx mobx-react --save
+ ```
+
+ We will also need to install a babel plugin so we can use ES7 decorators:
+
+ ```sh
+ # If you are using version 0.56.0 or newer of React Native
+ yarn add -D @babel/plugin-proposal-decorators
+
+ # or
+ # yarn add -D babel-plugin-transform-decorators-legacy
+ ```
+
+ Let’s update the `.babelrc` file to configure our babel plugins
+
+ ```json
+{
+  "presets": ["react-native"],
+  "plugins": ["transform-decorators-legacy"]
+}
+
+// or if RN > 0.56.0
+{
+  "presets": ["react-native"],
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ]
+  ]
+}
+ ```
+
+### Use mobx
+
+- _root/stores/orderLineStore.js_
+
+```js
+import { observable, computed } from 'mobx';
+
+class OrderLine {
+
+  @observable price = 3000;
+  @observable amount = 1;
+
+  @computed get total() {
+    return this.price * this.amount;
+  }
+
+};
+
+const self = new OrderLine();
+export default self;
+```
+
+- _root/stores/index.js_
+
+```js
+import orderLineStore from './orderLineStore';
+
+const stores = {
+  orderLine: orderLineStore,
+};
+
+export default stores;
+```
+
+- Add `Provider` for application in index.js
+
+```js
+// root/index.js
+...
+import { Provider } from 'mobx-react';
+import stores from './stores';
+
+AppRegistry.registerComponent(
+  appName, () => (
+    <Provider {...stores}>
+      <App />
+    <Provider>
+  )
+);
+```
+
+- _root/App.js_
+
+```js
+import React from 'react';
+import { View, Text } from 'react-native';
+import { observer, inject } from 'mobx-react';
+
+@inject(({ orderLine }) => ({
+  total: orderLine.total,
+}))
+
+@observer
+class App extends React.Component {
+
+  render() {
+    return (
+      <View>
+        <Text>OrderLine {this.props.total} from store.</Text>
+      </View>
+    );
+  }
+}
+
+export default App;
+```
+
+
+## VSCode warning
+
+When I was setting up new React and Mobx project from scratch, 
+I was getting the following warning in VSCode.
+
+Experimental support for decorators is a feature that is subject to change in a future release. 
+Set the `experimentalDecorators` option to remove this warning.
+
+Create `jsconfig.json` file in the root directory of your project and include the following options.
+
+```json
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "allowJs": true
+  }
+}
+```
