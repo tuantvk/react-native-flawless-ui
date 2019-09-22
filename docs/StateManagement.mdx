@@ -95,6 +95,179 @@ class ThemedButton extends React.Component {
 
  ## Redux
 
+Install the dependencies
+
+```sh
+yarn add redux react-redux redux-persist redux-thunk
+
+# or
+# npm install redux react-redux redux-persist redux-thunk --save
+```
+
+```sh
+yarn add -D redux-logger
+```
+
+### Use Redux
+
+- _root/index.js_ 
+
+```js
+import React from 'react';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+
+import { store, persistor } from './store/store';
+
+AppRegistry.registerComponent(
+  appName, () => (
+    <Provider {...store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>
+  )
+);
+```
+
+- _root/App.js_
+
+```js
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+
+class Counter extends Component {
+  render() {
+    return (
+      <View>
+        <Text>Counter</Text>
+        <TouchableOpacity onPress={() => this.props.increaseCounter()}>
+          <Text>+</Text>
+        </TouchableOpacity>
+        <Text>{this.props.counter}</Text>
+        <TouchableOpacity onPress={() => this.props.decreaseCounter()}>
+          <Text>-</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+}
+
+// Map State To Props (Redux Store Passes State To Component)
+const mapStateToProps = state => {
+  return {
+    counter: state.counterReducer.counter,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    // Increase Counter
+    increaseCounter: payload => dispatch({
+      type: 'INCREASE_COUNTER',
+      payload: payload,
+    }),
+    // Decrease Counter
+    decreaseCounter: payload => dispatch({
+      type: 'DECREASE_COUNTER',
+      payload: payload,
+    }),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+```
+
+- _root/store/store.js_
+
+```js
+import AsyncStorage from '@react-native-community/async-storage';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+import { persistStore, persistReducer } from 'redux-persist';
+
+import rootReducer from '../reducers/index';
+
+const middleware = [thunk];
+
+if (process.env.NODE_ENV !== 'production') {
+  middleware.push(createLogger());
+}
+
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+  whitelist: [
+    'authReducer',
+  ],
+  blacklist: [
+    'counterReducer',
+  ],
+};
+
+const persistedReducer = persistReducer(
+  persistConfig, rootReducer
+);
+
+const store = createStore(
+  persistedReducer,
+  applyMiddleware(...middleware),
+);
+
+const persistor = persistStore(store);
+
+export {
+  store,
+  persistor,
+};
+```
+
+- _root/reducers/counterReducer.js_
+
+```js
+const initialState = {
+  counter: 0,
+};
+
+const counterReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'INCREASE_COUNTER': {
+      return {
+        ...state,
+        counter: state.counter + 1,
+      }
+    }
+    case 'DECREASE_COUNTER': {
+      return {
+        ...state,
+        counter: state.counter - 1,
+      }
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+export default counterReducer;
+```
+
+- _root/reducers/index.js_
+
+```js
+import { combineReducers } from 'redux';
+
+import counterReducer from './counterReducer';
+
+const rootReducer = combineReducers({
+  counterReducer: counterReducer,
+});
+
+export default rootReducer;
+```
+
 
  ## Mobx
 
@@ -184,7 +357,7 @@ AppRegistry.registerComponent(
   appName, () => (
     <Provider {...stores}>
       <App />
-    <Provider>
+    </Provider>
   )
 );
 ```

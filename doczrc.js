@@ -1,7 +1,7 @@
 export default {
   themeConfig: {
     mode: 'dark',
-    linesToScrollEditor: 40,
+    linesToScrollEditor: 60,
   },
   menu: [
     "Introduction",
