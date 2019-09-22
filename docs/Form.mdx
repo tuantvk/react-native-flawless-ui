@@ -70,13 +70,17 @@ class ReduxFormExample extends Component {
     )
   }
 
+  _submitForm = values => {
+    // Do something
+  }
+
   render() {
     const { handleSubmit } = this.props;
     return (
       <View>
-        <Field placeholder="email" component={this.renderInput} />
-        <Field placeholder="name" component={this.renderInput} />
-        <Button onPress={reset}>
+        <Field name="email"  placeholder="email" component={this.renderInput} />
+        <Field name="name"  placeholder="name" component={this.renderInput} />
+        <Button onPress={handleSubmit(this._submitForm)}>
           <Text>Submit</Text>
         </Button>
       </View>

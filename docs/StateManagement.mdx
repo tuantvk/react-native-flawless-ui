@@ -95,5 +95,315 @@ class ThemedButton extends React.Component {
 
  ## Redux
 
+Install the dependencies
+
+```sh
+yarn add redux react-redux redux-persist redux-thunk
+
+# or
+# npm install redux react-redux redux-persist redux-thunk --save
+```
+
+```sh
+yarn add -D redux-logger
+```
+
+### Use Redux
+
+- _root/index.js_ 
+
+```js
+import React from 'react';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+
+import { store, persistor } from './store/store';
+
+AppRegistry.registerComponent(
+  appName, () => (
+    <Provider {...store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>
+  )
+);
+```
+
+- _root/App.js_
+
+```js
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+
+class Counter extends Component {
+  render() {
+    return (
+      <View>
+        <Text>Counter</Text>
+        <TouchableOpacity onPress={() => this.props.increaseCounter()}>
+          <Text>+</Text>
+        </TouchableOpacity>
+        <Text>{this.props.counter}</Text>
+        <TouchableOpacity onPress={() => this.props.decreaseCounter()}>
+          <Text>-</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+}
+
+// Map State To Props (Redux Store Passes State To Component)
+const mapStateToProps = state => {
+  return {
+    counter: state.counterReducer.counter,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    // Increase Counter
+    increaseCounter: payload => dispatch({
+      type: 'INCREASE_COUNTER',
+      payload: payload,
+    }),
+    // Decrease Counter
+    decreaseCounter: payload => dispatch({
+      type: 'DECREASE_COUNTER',
+      payload: payload,
+    }),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+```
+
+- _root/store/store.js_
+
+```js
+import AsyncStorage from '@react-native-community/async-storage';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+import { persistStore, persistReducer } from 'redux-persist';
+
+import rootReducer from '../reducers/index';
+
+const middleware = [thunk];
+
+if (process.env.NODE_ENV !== 'production') {
+  middleware.push(createLogger());
+}
+
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+  whitelist: [
+    'authReducer',
+  ],
+  blacklist: [
+    'counterReducer',
+  ],
+};
+
+const persistedReducer = persistReducer(
+  persistConfig, rootReducer
+);
+
+const store = createStore(
+  persistedReducer,
+  applyMiddleware(...middleware),
+);
+
+const persistor = persistStore(store);
+
+export {
+  store,
+  persistor,
+};
+```
+
+- _root/reducers/counterReducer.js_
+
+```js
+const initialState = {
+  counter: 0,
+};
+
+const counterReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'INCREASE_COUNTER': {
+      return {
+        ...state,
+        counter: state.counter + 1,
+      }
+    }
+    case 'DECREASE_COUNTER': {
+      return {
+        ...state,
+        counter: state.counter - 1,
+      }
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+export default counterReducer;
+```
+
+- _root/reducers/index.js_
+
+```js
+import { combineReducers } from 'redux';
+
+import counterReducer from './counterReducer';
+
+const rootReducer = combineReducers({
+  counterReducer: counterReducer,
+});
+
+export default rootReducer;
+```
+
 
  ## Mobx
+
+ Install the dependencies we will need: [mobx](https://mobx.js.org/) and [mobx-react](https://github.com/mobxjs/mobx-react)
+
+ ```sh
+ yarn add mobx mobx-react
+ # or
+ # npm i mobx mobx-react --save
+ ```
+
+ We will also need to install a babel plugin so we can use ES7 decorators:
+
+ ```sh
+ # If you are using version 0.56.0 or newer of React Native
+ yarn add -D @babel/plugin-proposal-decorators
+
+ # or
+ # yarn add -D babel-plugin-transform-decorators-legacy
+ ```
+
+ Let’s update the `.babelrc` file to configure our babel plugins
+
+ ```json
+{
+  "presets": ["react-native"],
+  "plugins": ["transform-decorators-legacy"]
+}
+
+// or if RN > 0.56.0
+{
+  "presets": ["react-native"],
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ]
+  ]
+}
+ ```
+
+### Use mobx
+
+- _root/stores/orderLineStore.js_
+
+```js
+import { observable, computed } from 'mobx';
+
+class OrderLine {
+
+  @observable price = 3000;
+  @observable amount = 1;
+
+  @computed get total() {
+    return this.price * this.amount;
+  }
+
+};
+
+const self = new OrderLine();
+export default self;
+```
+
+- _root/stores/index.js_
+
+```js
+import orderLineStore from './orderLineStore';
+
+const stores = {
+  orderLine: orderLineStore,
+};
+
+export default stores;
+```
+
+- Add `Provider` for application in index.js
+
+```js
+// root/index.js
+...
+import { Provider } from 'mobx-react';
+import stores from './stores';
+
+AppRegistry.registerComponent(
+  appName, () => (
+    <Provider {...stores}>
+      <App />
+    </Provider>
+  )
+);
+```
+
+- _root/App.js_
+
+```js
+import React from 'react';
+import { View, Text } from 'react-native';
+import { observer, inject } from 'mobx-react';
+
+@inject(({ orderLine }) => ({
+  total: orderLine.total,
+}))
+
+@observer
+class App extends React.Component {
+
+  render() {
+    return (
+      <View>
+        <Text>OrderLine {this.props.total} from store.</Text>
+      </View>
+    );
+  }
+}
+
+export default App;
+```
+
+
+## VSCode warning
+
+When I was setting up new React and Mobx project from scratch, 
+I was getting the following warning in VSCode.
+
+Experimental support for decorators is a feature that is subject to change in a future release. 
+Set the `experimentalDecorators` option to remove this warning.
+
+Create `jsconfig.json` file in the root directory of your project and include the following options.
+
+```json
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "allowJs": true
+  }
+}
+```
