@@ -8,5 +8,6 @@ export default {
     "Navigation",
     "State Management",
     "Form",
+    "Custom Component",
   ]
 }
