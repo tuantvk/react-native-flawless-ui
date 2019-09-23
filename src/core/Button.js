@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 
 const styles = StyleSheet.create({
@@ -31,5 +32,9 @@ const Button = ({ name, ...rest }) => (
   </TouchableOpacity>
 );
 
+
+Button.propTypes = {
+  name: PropTypes.string.isRequired,
+}
 
 export default Button;
