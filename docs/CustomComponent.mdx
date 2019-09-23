@@ -120,6 +120,52 @@ export default App;
 ```
 
 
+## Header Use Component Library
+
+
+### Header Native Base
+
+```js
+// header-native-base.js
+import { Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
+...
+<Header>
+  <Left>
+    <Button transparent>
+      <Icon name='arrow-back' />
+    </Button>
+  </Left>
+  <Body>
+    <Title>Header</Title>
+  </Body>
+  <Right>
+    <Button transparent>
+      <Icon name='menu' />
+    </Button>
+  </Right>
+</Header>
+```
+
+### Header React Native Elements
+
+```js
+// header-react-native-elements.js
+import { Header } from 'react-native-elements';
+...
+<Header
+  leftComponent={{ icon: 'menu', color: '#fff' }}
+  centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+  rightComponent={{ icon: 'home', color: '#fff' }}
+/>
+```
+
+*Result:*
+
+| Native Base        | React Native Elements           |
+| ------------- | ------------- |
+| ![Header Native Base](../assets/header-native-base.png)      | ![Header React Native Elements](../assets/header-react-native-elements.png) |
+
+
 ## Button
 
 React Native may supply you with an abundance of functionality and components that work right off the bat, 
