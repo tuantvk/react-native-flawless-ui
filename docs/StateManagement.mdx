@@ -299,7 +299,9 @@ export default rootReducer;
 
 // or if RN > 0.56.0
 {
-  "presets": ["react-native"],
+  "presets": [
+    "module:metro-react-native-babel-preset"
+  ],
   "plugins": [
     [
       "@babel/plugin-proposal-decorators",
@@ -402,8 +404,7 @@ Create `jsconfig.json` file in the root directory of your project and include th
 ```json
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "allowJs": true
+    "experimentalDecorators": true
   }
 }
 ```
