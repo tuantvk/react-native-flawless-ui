@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Version 0.1.2
+Build: 190923 
+
+### Updated
+
+- Fix missing `metro-react-native-babel-preset`
+- Update `experimentalDecorators`
+
+
 ## Version 0.1.1
 Build: 190923 
 
