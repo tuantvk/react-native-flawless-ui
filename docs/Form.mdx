@@ -166,6 +166,7 @@ View config my repo [ScrollableAvoidKeyboard](https://github.com/tuantvk/react-n
 
 ```js
 // ScrollableAvoidKeyboard.js
+import React from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const ScrollableAvoidKeyboard = ({
@@ -179,13 +180,15 @@ const ScrollableAvoidKeyboard = ({
       alwaysBounceVertical={false}
       alwaysBounceHorizontal={false}
       removeClippedSubviews={false}
-      contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
+      contentContainerStyle={contentContainerStyle}
       enableOnAndroid={true}
       {...restProps}
     >
       {children}
     </KeyboardAwareScrollView>
   );
+
+export default ScrollableAvoidKeyboard;
 ```
 
 ### Android Support
