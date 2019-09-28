@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Version 0.1.3
+Build: 190928 
+
+### Fix
+
+- import React in ScrollableAvoidKeyboard
+
+
 ## Version 0.1.2
 Build: 190923 
 
