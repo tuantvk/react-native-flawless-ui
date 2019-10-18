@@ -226,7 +226,7 @@ const { height, width } = Dimensions.get('window');
 const guidelineBaseWidth = 360;
 const guidelineBaseHeight = 592;
 
-// pading, margin, fontSize, ....
+// padding, margin, fontSize, ....
 export const scale = size => width / guidelineBaseWidth * size;
 
 // width
@@ -243,5 +243,17 @@ The purpose of these functions is to be able to take one design (from a standard
 `wScale` is like scale, but based on height instead of width, which can be useful.
 
 The real magic happens at `hScale`. The cool thing about it is that you can control the resize factor `(default is 0.5)`.
+
+### Example:
+
+```js
+...
+button: {
+  padding: scale(10),
+  margin: scale(25),
+  width: wScale(150),
+  height: hScale(30),
+}
+```
 
 View on [Github](https://github.com/tuantvk/react-native-flawless-ui/blob/master/src/supports/vu.js)
