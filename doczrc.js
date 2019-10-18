@@ -9,5 +9,6 @@ export default {
     "State Management",
     "Form",
     "Custom Component",
+    "Use Typescript",
   ]
 }
