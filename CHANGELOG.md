@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Version 0.1.4
+Build: 191021
+
+### Fix
+
+- Rename pading -> padding
+
+### Updated
+
+- Add Typescript
+
+
 ## Version 0.1.3
 Build: 190928 
 
