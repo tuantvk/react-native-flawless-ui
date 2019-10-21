@@ -5,11 +5,161 @@ route: /use-typescript
 
 # Use Typescript
 
+This post uses Microsoft's [TypeScript-React-Native-Starter](https://github.com/Microsoft/TypeScript-React-Native-Starter) repo as a guide.
+
 
 ## Create react native app
+
+Once you've tried scaffolding out an ordinary React Native project,
+you'll be ready to start adding TypeScript. Let's go ahead and do that.
+
+```sh
+react-native init MyAwesomeProject
+cd MyAwesomeProject
+```
+
+### Adding TypeScript
+
+The next step is to add TypeScript to your project. The following commands will:
+
+- add TypeScript to your project
+- add React Native TypeScript Transformer to your project
+- initialize an empty TypeScript config file, which we'll configure next
+- add an empty React Native TypeScript Transformer config file, which we'll configure next
+- Adds typings for React and React Native
+
+```sh
+yarn add --dev typescript
+yarn add --dev react-native-typescript-transformer
+yarn tsc --init --pretty --jsx react-native
+touch rn-cli.config.js
+yarn add --dev @types/react @types/react-native
+```
+
+The `tsconfig.json` file contains all the settings for the TypeScript compile. 
+The defaults created by the command above are mostly fine, but open the file and uncomment the following line:
+
+```json
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "lib": [
+      "es6"
+    ],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "strict": true,
+    "target": "esnext"
+  },
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ]
+}
+```
+
+The `rn-cli.config.js` contains the settings for the React Native TypeScript Transformer.
+Open it and add the following:
+
+```js
+module.exports = {
+  getTransformModulePath() {
+    return require.resolve("react-native-typescript-transformer");
+  },
+  getSourceExts() {
+    return ["ts", "tsx"];
+  }
+};
+```
 
 
 ## Button
 
+Example Button component use Typescript:
+
+```tsx
+import React from 'react';
+import {
+  TouchableOpacity,
+} from 'react-native';
+
+interface BProps {
+  activeOpacity?: number,
+  children: React.ReactNode,
+}
+
+const Button = ({
+  children,
+  activeOpacity,
+  ...rest
+}: BProps) => (
+    <TouchableOpacity activeOpacity={activeOpacity} {...rest}>
+      {children}
+    </TouchableOpacity>
+  );
+
+Button.defaultProps = {
+  activeOpacity: 0.8,
+}
+
+export default Button;
+```
+
 
 ## Text
+
+Example Text component use Typescript:
+
+```tsx
+import React from 'react';
+import {
+  Text as RNText,
+  TextStyle,
+} from 'react-native';
+import {
+  Consts, // size of text
+  Colors, // color if text
+} from '../../constants';
+
+export interface TextProps {
+  size?: 'S' | 'M' | 'L' | 'XL' | 'XXL'; // size name
+  style?: TextStyle;
+  bold?: boolean,
+  color?: string,
+  children: React.ReactNode;
+}
+
+const getSize: { [key: string]: number } = Consts;
+
+const checkSize = (size: string): number => {
+  return getSize[size] || 0;
+}
+
+const Text = ({
+  size = 'M',
+  children,
+  style,
+  bold,
+  color,
+  ...rest
+}: TextProps) => (
+    <RNText {...rest}
+      style={{
+        ...style,
+        fontSize: checkSize(size),
+        fontWeight: bold ? '700' : '400',
+        color: color || Colors.black,
+      }}
+    >
+      {children}
+    </RNText>
+  );
+
+export default Text;
+```
