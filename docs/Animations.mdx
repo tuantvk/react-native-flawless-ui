@@ -1,0 +1,204 @@
+---
+name: Animations
+route: /animations
+---
+
+# Animations
+
+Animations are very important to create a great user experience. 
+Stationary objects must overcome inertia as they start moving. 
+Objects in motion have momentum and rarely come to a stop immediately. 
+Animations allow you to convey physically believable motion in your interface.
+
+
+## Animations in React Native
+
+React Native provides two complementary animation systems: 
+[Animated](https://facebook.github.io/react-native/docs/animated) for granular and interactive control of specific values, 
+and [LayoutAnimation](https://facebook.github.io/react-native/docs/animations#layoutanimation-api) for animated global layout transactions.
+
+
+### Example for animation use Animated API
+
+```js
+// Example from Animations docs
+// https://facebook.github.io/react-native/docs/animations#animated-api
+
+import React, { useState, useEffect } from 'react';
+import { Animated, Text, View } from 'react-native';
+
+const FadeInView = (props) => {
+  const [fadeAnim] = useState(new Animated.Value(0))  // Initial value for opacity: 0
+
+  React.useEffect(() => {
+    Animated.timing(
+      fadeAnim,
+      {
+        toValue: 1,
+        duration: 10000,
+      }
+    ).start();
+  }, [])
+
+  return (
+    <Animated.View                 // Special animatable View
+      style={{
+        ...props.style,
+        opacity: fadeAnim,         // Bind opacity to animated value
+      }}
+    >
+      {props.children}
+    </Animated.View>
+  );
+}
+
+// You can then use your `FadeInView` in place of a `View` in your components:
+export default () => {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <FadeInView style={{ width: 250, height: 50, backgroundColor: 'powderblue' }}>
+        <Text style={{ fontSize: 28, textAlign: 'center', margin: 10 }}>Fading in</Text>
+      </FadeInView>
+    </View>
+  )
+}
+```
+
+
+## react-native-animatable
+
+To animate things you must use the createAnimatableComponent composer similar to the 
+`Animated.createAnimatedComponent`. 
+The common components `View`, `Text` and `Image` are precomposed and exposed under the `Animatable` namespace.
+
+Repo on [Github](https://github.com/oblador/react-native-animatable)
+
+### Installation
+
+```bash
+# use yarn
+yarn add react-native-animatable
+# or npm
+npm install react-native-animatable --save
+```
+
+If you have your own component that you wish to animate, 
+simply wrap it with a `Animatable.View` or compose it with:
+
+```js
+import * as Animatable from 'react-native-animatable';
+MyCustomComponent = Animatable.createAnimatableComponent(MyCustomComponent);
+```
+
+### Example
+
+```js
+import React from 'react';
+import {
+  TouchableWithoutFeedback,
+  Text,
+} from 'react-native';
+import * as Animatable from 'react-native-animatable';
+
+class ExampleView extends Component {
+  handleViewRef = ref => this.view = ref;
+
+  bounce = () => this.view.bounce(800)
+    .then(endState => console.log(endState.finished ? 'finished' : 'cancelled'));
+
+  render() {
+    return (
+      <TouchableWithoutFeedback onPress={this.bounce}>
+        <Animatable.View ref={this.handleViewRef}>
+          <Text>Bounce me!</Text>
+        </Animatable.View>
+      </TouchableWithoutFeedback>
+    );
+  }
+}
+```
+
+
+## react-native-reanimated
+
+React Native's Animated library reimplemented.
+
+It provides a more comprehensive, 
+low level abstraction for the Animated library API to be built on top of and hence 
+allow for much greater flexibility especially when it comes to gesture based interactions.
+
+
+### Installation
+
+```bash
+# use yarn
+yarn add react-native-reanimated
+# or npm
+npm install react-native-reanimated --save
+```
+
+> Note:
+>
+> Link native code with `react-native cli` if react-native < 0.60
+>
+```bash
+react-native link react-native-reanimated
+```
+
+View all example on [react-native-reanimated example](https://github.com/kmagiera/react-native-reanimated/tree/master/Example)
+
+
+### Example for progress
+
+```js
+// progress.js
+// https://github.com/kmagiera/react-native-reanimated/blob/master/Example/transitions/progress.js
+
+import React, { useState, useRef } from 'react';
+import { Text, View, StyleSheet, Button, StatusBar } from 'react-native';
+import { Transitioning, Transition } from 'react-native-reanimated';
+
+function Progress() {
+  const transition = <Transition.Change interpolation="easeInOut" />;
+
+  let [perc, setPerc] = useState(20);
+  const ref = useRef();
+
+  return (
+    <Transitioning.View
+      ref={ref}
+      style={styles.centerAll}
+      transition={transition}>
+      <Button
+        title={perc + 20 <= 100 ? '+20%' : '-80%'}
+        color="#FF5252"
+        onPress={() => {
+          ref.current.animateNextTransition();
+          setPerc(perc + 20 <= 100 ? perc + 20 : 20);
+        }}
+      />
+      <View style={styles.bar}>
+        <View
+          style={{ height: 5, width: `${perc}%`, backgroundColor: '#FF5252' }}
+        />
+      </View>
+    </Transitioning.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  centerAll: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 100,
+  },
+  bar: {
+    marginTop: 30,
+    height: 5,
+    width: '80%',
+    backgroundColor: '#aaa',
+  },
+});
+
+export default Progress;
+```

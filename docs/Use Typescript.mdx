@@ -163,3 +163,33 @@ const Text = ({
 
 export default Text;
 ```
+
+### Example use Text component
+
+```tsx
+import React, { Component } from 'react';
+import { View } from 'react-native';
+import Text from './Text';
+
+const Home = () => (
+  <View>
+    {/* prop size 'S'  | 'M'  | 'L'  | 'XL' | 'XXL' */}
+    {/* same      '11' | '14' | '16' | '22' | '28' */}
+    <Text size="XL">Text component 1</Text>
+
+    {/* use fontWeight bold */}
+    <Text bold={true}>Text component 2</Text>
+
+    {/* custom color text */}
+    <Text color="#ff0">Text component 3</Text>
+
+    {/* add more style  */}
+    <Text style={{ textAlign: 'right' }}>Text component 4</Text>
+
+    {/* use onPress of Text react native */}
+    <Text onPress={() => alert("Hello from Text")}>Text component 5</Text>
+  </View>
+);
+
+export default Home;
+```
