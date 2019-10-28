@@ -10,5 +10,6 @@ export default {
     "Form",
     "Custom Component",
     "Use Typescript",
+    "Animations"
   ]
 }

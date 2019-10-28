@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Version 0.1.5-beta
+Build: 191028
+
+### Updated
+
+- Add example for use Text component in Typescript
+- Add Animations
+
+
 ## Version 0.1.4
 Build: 191021
 
