@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 const ScrollableAvoidKeyboard = ({
   children,
   contentContainerStyle,
-  ...restProps,
+  ...restProps
 }) => (
     <KeyboardAwareScrollView
       bounces={false}

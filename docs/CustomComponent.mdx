@@ -215,7 +215,7 @@ export default Button;
 ## Screen Sizes and Resolutions
 
 That’s probably because the design was created using pixels whereas all dimensions in React Native are unitless, 
-represented by “dp” (density-independent pixels). 
+represented by `dp` (density-independent pixels). 
 Simply put – the bigger your device is, the more dp it’ll have.
 
 ```js
@@ -245,3 +245,16 @@ The purpose of these functions is to be able to take one design (from a standard
 The real magic happens at `hScale`. The cool thing about it is that you can control the resize factor `(default is 0.5)`.
 
 View on [Github](https://github.com/tuantvk/react-native-flawless-ui/blob/master/src/supports/vu.js)
+
+
+### Example
+
+```js
+// style button
+...
+button: {
+  width: wScale(80)
+  height: hScale(120),
+  padding: scale(15),
+}
+```

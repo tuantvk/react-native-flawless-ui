@@ -1,5 +1,16 @@
 # CHANGELOG
 
+
+## Version 0.1.6
+Build: 191031
+
+### Updated
+
+- Fix error `...rest,` when copy `ScrollableAvoidKeyboard`
+- Add example for use Screen Sizes and Resolutions
+
+
+
 ## Version 0.1.5-beta
 Build: 191028
 
