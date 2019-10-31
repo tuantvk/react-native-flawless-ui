@@ -5,7 +5,7 @@ const { height, width } = Dimensions.get('window');
 const guidelineBaseWidth = 360;
 const guidelineBaseHeight = 592;
 
-// pading, margin, fontSize, ....
+// padding, margin, fontSize, ....
 export const scale = size => width / guidelineBaseWidth * size;
 
 
