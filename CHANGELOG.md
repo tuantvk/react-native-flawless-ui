@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## Version 1.0.0
+Build: 191128
+
+### Updated
+
+- Update theme codemirror
+- Add docs for Blog
+
+
+
 ## Version 0.1.6
 Build: 191031
 
