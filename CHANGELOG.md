@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## Version 1.0.1
+Build: 191208
+
+### Updated
+
+- Update UI Component
+
+
+
 ## Version 1.0.0
 Build: 191128
 
